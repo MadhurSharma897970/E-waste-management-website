@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Waste Quiz Challenge</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    header {
+      text-align: center;
+      background: #333;
+      color: white;
+      padding: 10px 0;
+    }
+    section {
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    .question {
+      margin: 15px 0;
+    }
+    .button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background-color: #218838;
+    }
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>E-Waste Quiz Challenge</h1>
+  </header>
+
+  <section>
+    <h2>Test Your Knowledge</h2>
+    <div id="quiz-container">
+      <div id="question-container"></div>
+      <div id="answer-buttons" class="btn-container"></div>
+      <button class="button" id="next-button" style="display: none;">Next Question</button>
+    </div>
+    <div id="result"></div>
+  </section>
+
+  <script>
+    const questions = [
+      {
+        question: "What is e-waste?",
+        answers: [
+          { text: "Old electronic devices that are discarded", correct: true },
+          { text: "Food waste", correct: false },
+          { text: "Paper products", correct: false },
+          { text: "Plastic waste", correct: false }
+        ]
+      },
+      {
+        question: "Which of the following is an example of e-waste?",
+        answers: [
+          { text: "Broken smartphone", correct: true },
+          { text: "Used batteries", correct: false },
+          { text: "Old clothes", correct: false },
+          { text: "Cans", correct: false }
+        ]
+      },
+      {
+        question: "What is one harmful substance found in e-waste?",
+        answers: [
+          { text: "Lead", correct: true },
+          { text: "Oxygen", correct: false },
+          { text: "Carbon dioxide", correct: false },
+          { text: "Water", correct: false }
+        ]
+      },
+      {
+        question: "What should you do with old electronics?",
+        answers: [
+          { text: "Throw them in the trash", correct: false },
+          { text: "Recycle them properly", correct: true },
+          { text: "Burn them", correct: false },
+          { text: "Bury them", correct: false }
+        ]
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startGame() {
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById('result').innerText = "";
+      document.getElementById('next-button').style.display = "none";
+      showQuestion(questions[currentQuestionIndex]);
+    }
+
+    function showQuestion(question) {
+      document.getElementById('question-container').innerText = question.question;
+      const answerButtons = document.getElementById('answer-buttons');
+      answerButtons.innerHTML = ""; // Clear previous answers
+
+      question.answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.innerText = answer.text;
+        button.classList.add('button');
+        button.addEventListener('click', () => selectAnswer(answer));
+        answerButtons.appendChild(button);
+      });
+    }
+
+    function selectAnswer(answer) {
+      if (answer.correct) {
+        score++;
+      }
+      const nextButton = document.getElementById('next-button');
+      nextButton.style.display = "block";
+      const answerButtons = document.getElementById('answer-buttons');
+      answerButtons.innerHTML = ""; // Clear answer buttons
+      nextButton.onclick = () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          showQuestion(questions[currentQuestionIndex]);
+          nextButton.style.display = "none";
+        } else {
+          showResult();
+        }
+      };
+    }
+
+    function showResult() {
+      document.getElementById('question-container').innerText = "";
+      document.getElementById('answer-buttons').innerHTML = "";
+      document.getElementById('next-button').style.display = "none";
+      document.getElementById('result').innerText = `You scored ${score} out of ${questions.length}!`;
+    }
+
+    // Start the game when the page loads
+    startGame();
+  </script>
+
+</body>
+</html>

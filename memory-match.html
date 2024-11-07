@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Waste Memory Match Game</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+    header {
+      background: #333;
+      color: white;
+      padding: 10px 0;
+    }
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+    .card {
+      width: 100%;
+      padding: 20px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: transform 0.3s;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card.flipped {
+      background-color: #007bff;
+      color: white;
+      pointer-events: none; /* Disable clicking on flipped cards */
+    }
+    .hidden {
+      visibility: hidden;
+    }
+    #result {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>E-Waste Memory Match Game</h1>
+  </header>
+
+  <div class="game-board" id="gameBoard"></div>
+  <div id="result"></div>
+
+  <script>
+    const items = [
+      'Old Phone', 'Old Phone', // Two pairs
+      'Plastic Bottle', 'Plastic Bottle',
+      'Metal Can', 'Metal Can',
+      'Old Laptop', 'Old Laptop',
+      'Plastic Cable', 'Plastic Cable',
+      'Iron Wire', 'Iron Wire'
+    ];
+
+    let cardValues = [];
+    let matchedCards = [];
+    let attempts = 0;
+
+    // Shuffle items
+    items.sort(() => 0.5 - Math.random());
+
+    const gameBoard = document.getElementById('gameBoard');
+
+    // Create cards
+    items.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.value = item;
+      card.dataset.index = index;
+      card.innerHTML = '?';
+      card.addEventListener('click', flipCard);
+      gameBoard.appendChild(card);
+    });
+
+    function flipCard() {
+      const card = this;
+      if (card.classList.contains('flipped') || matchedCards.includes(card.dataset.value)) {
+        return; // Ignore if already flipped or matched
+      }
+      card.classList.add('flipped');
+      card.innerHTML = card.dataset.value; // Show card value
+      cardValues.push(card);
+      
+      if (cardValues.length === 2) {
+        attempts++;
+        checkForMatch();
+      }
+    }
+
+    function checkForMatch() {
+      const [firstCard, secondCard] = cardValues;
+      if (firstCard.dataset.value === secondCard.dataset.value) {
+        matchedCards.push(firstCard.dataset.value);
+        cardValues = [];
+        if (matchedCards.length === items.length / 2) {
+          setTimeout(() => {
+            document.getElementById('result').innerText = `You found all pairs in ${attempts} attempts!`;
+          }, 500);
+        }
+      } else {
+        setTimeout(() => {
+          firstCard.classList.remove('flipped');
+          firstCard.innerHTML = '?'; // Hide card value
+          secondCard.classList.remove('flipped');
+          secondCard.innerHTML = '?'; // Hide card value
+          cardValues = [];
+        }, 1000);
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+
